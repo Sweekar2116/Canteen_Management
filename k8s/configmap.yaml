@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canteen-config
+  namespace: canteen-hub
+data:
+  DB_URL: "jdbc:mysql://canteen-mysql:3306/canteen_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&autoReconnect=true"
+  DB_NAME: "canteen_db"
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: "prod"
+  CORS_ALLOWED_ORIGINS: "https://canteen.yourdomain.com,http://localhost"
+  SWAGGER_ENABLED: "false"

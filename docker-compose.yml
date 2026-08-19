@@ -1,0 +1,106 @@
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Database Service (MySQL 8.0)
+  # ----------------------------------------------------------------------------
+  canteen-db:
+    image: mysql:8.0
+    container_name: canteen-mysql
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=200
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-canteen_db}
+      MYSQL_USER: ${DB_USER:-canteen_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-canteen_secure_pass123}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secure_pass123}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - canteen_db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - canteen-network
+
+  # ----------------------------------------------------------------------------
+  # 2. Backend Service (Spring Boot 3 + Java 17 + Actuator)
+  # ----------------------------------------------------------------------------
+  canteen-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: canteen-backend:latest
+    container_name: canteen-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8080
+      DB_URL: jdbc:mysql://canteen-db:3306/${DB_NAME:-canteen_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&autoReconnect=true
+      DB_USERNAME: ${DB_USER:-canteen_user}
+      DB_PASSWORD: ${DB_PASSWORD:-canteen_secure_pass123}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost,http://localhost:80,http://localhost:5173,http://localhost:3000,http://127.0.0.1}
+      JPA_DDL_AUTO: update
+      SHOW_SQL: "false"
+      SWAGGER_ENABLED: "true"
+      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      canteen-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 35s
+    networks:
+      - canteen-network
+
+  # ----------------------------------------------------------------------------
+  # 3. Frontend Service (React 18 + Vite + Nginx Reverse Proxy)
+  # ----------------------------------------------------------------------------
+  canteen-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: canteen-frontend:latest
+    container_name: canteen-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      canteen-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/ || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - canteen-network
+
+# ------------------------------------------------------------------------------
+# Persistent Volumes & Networks
+# ------------------------------------------------------------------------------
+volumes:
+  canteen_db_data:
+    driver: local
+    name: canteen_db_data
+
+networks:
+  canteen-network:
+    driver: bridge
+    name: canteen-network
