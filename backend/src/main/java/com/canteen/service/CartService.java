@@ -61,7 +61,10 @@ public class CartService {
             }
         });
 
-        Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndMenuItemId(cart.getId(), item.getId());
+        Optional<CartItem> existingItem = cart.getItems().stream()
+            .filter(ci -> ci.getMenuItem().getId().equals(item.getId()))
+            .findFirst();
+
         if (existingItem.isPresent()) {
             CartItem cartItem = existingItem.get();
             int newQty = cartItem.getQuantity() + request.getQuantity();
@@ -77,25 +80,25 @@ public class CartService {
             cartItemRepository.save(cartItem);
         } else {
             CartItem newItem = new CartItem(cart, item, request.getQuantity());
+            cart.getItems().add(newItem);
             cartItemRepository.save(newItem);
         }
 
-        // Reload cart
-        Cart updatedCart = cartRepository.findById(cart.getId()).orElse(cart);
-        return mapToResponse(updatedCart);
+        cart.setUpdatedAt(java.time.LocalDateTime.now());
+        cartRepository.save(cart);
+        return mapToResponse(cart);
     }
 
     @Transactional
     public CartResponse updateItemQuantity(Long userId, Long cartItemId, int quantity) {
         Cart cart = getOrCreateCart(userId);
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+        CartItem cartItem = cart.getItems().stream()
+            .filter(ci -> ci.getId().equals(cartItemId))
+            .findFirst()
             .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
 
-        if (!cartItem.getCart().getId().equals(cart.getId())) {
-            throw new BadRequestException("Cart item does not belong to your cart");
-        }
-
         if (quantity <= 0) {
+            cart.getItems().remove(cartItem);
             cartItemRepository.delete(cartItem);
         } else {
             inventoryRepository.findByMenuItemId(cartItem.getMenuItem().getId()).ifPresent(inv -> {
@@ -107,29 +110,33 @@ public class CartService {
             cartItemRepository.save(cartItem);
         }
 
-        Cart updatedCart = cartRepository.findById(cart.getId()).orElse(cart);
-        return mapToResponse(updatedCart);
+        cart.setUpdatedAt(java.time.LocalDateTime.now());
+        cartRepository.save(cart);
+        return mapToResponse(cart);
     }
 
     @Transactional
     public CartResponse removeItemFromCart(Long userId, Long cartItemId) {
         Cart cart = getOrCreateCart(userId);
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+        CartItem cartItem = cart.getItems().stream()
+            .filter(ci -> ci.getId().equals(cartItemId))
+            .findFirst()
             .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
 
-        if (!cartItem.getCart().getId().equals(cart.getId())) {
-            throw new BadRequestException("Cart item does not belong to your cart");
-        }
-
+        cart.getItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
-        Cart updatedCart = cartRepository.findById(cart.getId()).orElse(cart);
-        return mapToResponse(updatedCart);
+        cart.setUpdatedAt(java.time.LocalDateTime.now());
+        cartRepository.save(cart);
+        return mapToResponse(cart);
     }
 
     @Transactional
     public void clearCart(Long userId) {
         Cart cart = getOrCreateCart(userId);
+        cart.getItems().clear();
         cartItemRepository.deleteByCartId(cart.getId());
+        cart.setUpdatedAt(java.time.LocalDateTime.now());
+        cartRepository.save(cart);
     }
 
     public Cart getOrCreateCart(Long userId) {

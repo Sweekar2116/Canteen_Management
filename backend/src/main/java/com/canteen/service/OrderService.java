@@ -157,7 +157,10 @@ public class OrderService {
         }
 
         // Clear user's cart
+        cart.getItems().clear();
         cartItemRepository.deleteByCartId(cart.getId());
+        cart.setUpdatedAt(LocalDateTime.now());
+        cartRepository.save(cart);
 
         // Send notification
         notificationService.createNotification(

@@ -14,6 +14,52 @@ import {
 
 export const CartPage: React.FC = () => {
   const { cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
+  const [updatingId, setUpdatingId] = React.useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  const handleDecrement = async (item: { id: number; quantity: number }) => {
+    setErrorMessage(null);
+    setUpdatingId(item.id);
+    try {
+      if (item.quantity <= 1) {
+        await removeFromCart(item.id);
+      } else {
+        await updateQuantity(item.id, item.quantity - 1);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to update quantity');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleIncrement = async (item: { id: number; quantity: number; stockQuantity?: number }) => {
+    setErrorMessage(null);
+    if (item.stockQuantity !== undefined && item.quantity >= item.stockQuantity) {
+      setErrorMessage(`Cannot add more: only ${item.stockQuantity} items in stock`);
+      return;
+    }
+    setUpdatingId(item.id);
+    try {
+      await updateQuantity(item.id, item.quantity + 1);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to update quantity');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleRemove = async (itemId: number) => {
+    setErrorMessage(null);
+    setUpdatingId(itemId);
+    try {
+      await removeFromCart(itemId);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to remove item');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   if (loading && !cart) {
     return (
@@ -64,60 +110,77 @@ export const CartPage: React.FC = () => {
         </button>
       </div>
 
+      {errorMessage && (
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-semibold flex items-center justify-between">
+          <span>{errorMessage}</span>
+          <button onClick={() => setErrorMessage(null)} className="text-xs font-bold text-rose-500 hover:text-rose-800">
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Cart Item List */}
         <div className="lg:col-span-8 space-y-4">
-          {cart.items.map((item) => (
-            <div
-              key={item.id}
-              className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between gap-4 hover:border-slate-300 transition"
-            >
-              <div className="flex items-center space-x-4">
-                <img
-                  src={item.imageUrl || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=200&q=80'}
-                  alt={item.itemName}
-                  className="h-16 w-16 rounded-2xl object-cover bg-slate-100 border border-slate-100 shadow-sm shrink-0"
-                  onError={(e: any) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=200&q=80';
-                  }}
-                />
-                <div className="space-y-1">
-                  <h4 className="font-extrabold text-slate-900 text-base">{item.itemName}</h4>
-                  <p className="text-xs text-slate-400">Unit Price: ₹{item.unitPrice}</p>
-                  <p className="text-sm font-black text-brand-600">Total: ₹{item.totalPrice}</p>
-                </div>
-              </div>
-
-              {/* Quantity Controls */}
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50/70 p-1">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="h-8 w-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-slate-700 hover:bg-slate-100 transition active:scale-95"
-                  >
-                    <Minus className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="w-10 text-center text-sm font-bold text-slate-900">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="h-8 w-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-slate-700 hover:bg-slate-100 transition active:scale-95"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
+          {cart.items.map((item) => {
+            const isUpdating = updatingId === item.id;
+            return (
+              <div
+                key={item.id}
+                className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between gap-4 hover:border-slate-300 transition"
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={item.imageUrl || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=200&q=80'}
+                    alt={item.itemName}
+                    className="h-16 w-16 rounded-2xl object-cover bg-slate-100 border border-slate-100 shadow-sm shrink-0"
+                    onError={(e: any) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=200&q=80';
+                    }}
+                  />
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-slate-900 text-base">{item.itemName}</h4>
+                    <p className="text-xs text-slate-400">Unit Price: ₹{item.unitPrice}</p>
+                    <p className="text-sm font-black text-brand-600">Total: ₹{item.totalPrice}</p>
+                  </div>
                 </div>
 
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
-                  title="Remove"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
+                {/* Quantity Controls */}
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50/70 p-1">
+                    <button
+                      onClick={() => handleDecrement(item)}
+                      disabled={isUpdating}
+                      className="h-8 w-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-slate-700 hover:bg-slate-100 transition active:scale-95 disabled:opacity-50"
+                      title={item.quantity <= 1 ? 'Remove from cart' : 'Decrease quantity'}
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="w-10 text-center text-sm font-bold text-slate-900">
+                      {isUpdating ? '...' : item.quantity}
+                    </span>
+                    <button
+                      onClick={() => handleIncrement(item)}
+                      disabled={isUpdating || (item.stockQuantity !== undefined && item.quantity >= item.stockQuantity)}
+                      className="h-8 w-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-slate-700 hover:bg-slate-100 transition active:scale-95 disabled:opacity-50"
+                      title="Increase quantity"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => handleRemove(item.id)}
+                    disabled={isUpdating}
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition disabled:opacity-50"
+                    title="Remove"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Order Summary Card */}

@@ -47,6 +47,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.post<Cart>('/cart/items', { menuItemId, quantity });
       setCart(res.data);
     } catch (err: any) {
+      console.error('Failed to add item to cart:', err);
       throw new Error(err.response?.data?.message || 'Failed to add item to cart');
     }
   };
@@ -54,9 +55,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateQuantity = async (cartItemId: number, quantity: number) => {
     if (!isAuthenticated) return;
     try {
+      if (quantity <= 0) {
+        await removeFromCart(cartItemId);
+        return;
+      }
       const res = await api.put<Cart>(`/cart/items/${cartItemId}?quantity=${quantity}`);
       setCart(res.data);
     } catch (err: any) {
+      console.error('Failed to update quantity:', err);
+      // Refresh cart from server in case of state mismatch
+      await fetchCart();
       throw new Error(err.response?.data?.message || 'Failed to update quantity');
     }
   };
@@ -67,6 +75,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.delete<Cart>(`/cart/items/${cartItemId}`);
       setCart(res.data);
     } catch (err: any) {
+      console.error('Failed to remove item:', err);
+      await fetchCart();
       throw new Error(err.response?.data?.message || 'Failed to remove item');
     }
   };
@@ -77,7 +87,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await api.delete('/cart');
       setCart(null);
     } catch (err: any) {
-      console.error('Failed to clear cart', err);
+      console.error('Failed to clear cart:', err);
+      await fetchCart();
     }
   };
 
