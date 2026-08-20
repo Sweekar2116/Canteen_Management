@@ -31,10 +31,17 @@ export const AdminOrdersPage: React.FC = () => {
       if (selectedStatus !== 'ALL') {
         params.status = selectedStatus;
       }
-      const res = await api.get<{ content: Order[] }>('/admin/orders', { params });
-      setOrders(res.data.content);
+      const res = await api.get<any>('/admin/orders', { params });
+      if (res.data && Array.isArray(res.data.content)) {
+        setOrders(res.data.content);
+      } else if (Array.isArray(res.data)) {
+        setOrders(res.data);
+      } else {
+        setOrders([]);
+      }
     } catch (err) {
       console.error('Failed to load admin orders:', err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }

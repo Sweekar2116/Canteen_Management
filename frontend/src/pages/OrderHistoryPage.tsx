@@ -11,8 +11,17 @@ export const OrderHistoryPage: React.FC = () => {
 
   useEffect(() => {
     api.get<Order[]>('/orders')
-      .then(res => setOrders(res.data))
-      .catch(err => console.error('Failed to load orders', err))
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setOrders(res.data);
+        } else {
+          setOrders([]);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load orders', err);
+        setOrders([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 

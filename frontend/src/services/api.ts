@@ -23,7 +23,15 @@ api.interceptors.request.use(
 
 // Global response error handler
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If we received an HTML document instead of JSON (happens on SPA rewrites when backend is offline/unproxied)
+    if (typeof response.data === 'string' && (response.data.trim().startsWith('<!doctype') || response.data.trim().startsWith('<html'))) {
+      const error: any = new Error('API server returned HTML instead of JSON. Backend might be unreachable.');
+      error.response = { status: 404, data: { message: 'Backend endpoint not found' } };
+      return Promise.reject(error);
+    }
+    return response;
+  },
   (error) => {
     if ((error.response?.status === 401 || error.response?.status === 403) && !window.location.pathname.includes('/login')) {
       localStorage.removeItem('token');

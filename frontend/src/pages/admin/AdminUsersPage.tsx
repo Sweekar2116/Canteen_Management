@@ -17,10 +17,17 @@ export const AdminUsersPage: React.FC = () => {
       if (query.trim()) params.query = query.trim();
       if (roleFilter) params.role = roleFilter;
 
-      const res = await api.get<{ content: User[] }>('/admin/users', { params });
-      setUsers(res.data.content);
+      const res = await api.get<any>('/admin/users', { params });
+      if (res.data && Array.isArray(res.data.content)) {
+        setUsers(res.data.content);
+      } else if (Array.isArray(res.data)) {
+        setUsers(res.data);
+      } else {
+        setUsers([]);
+      }
     } catch (err) {
       console.error('Failed to load users:', err);
+      setUsers([]);
     } finally {
       setLoading(false);
     }

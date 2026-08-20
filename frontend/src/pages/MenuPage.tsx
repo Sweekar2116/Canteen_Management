@@ -17,11 +17,13 @@ import api from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
+import { DEFAULT_CATEGORIES, DEFAULT_MENU_ITEMS } from '../services/mockData';
+
 export const MenuPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(DEFAULT_MENU_ITEMS);
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
+  const [loading, setLoading] = useState(false);
 
   const [query, setQuery] = useState(searchParams.get('query') || '');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
@@ -36,8 +38,12 @@ export const MenuPage: React.FC = () => {
 
   useEffect(() => {
     api.get<Category[]>('/categories')
-      .then(res => setCategories(res.data))
-      .catch(err => console.error(err));
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setCategories(res.data);
+        }
+      })
+      .catch(err => console.warn('Could not fetch categories, using default', err));
   }, []);
 
   useEffect(() => {
@@ -55,10 +61,32 @@ export const MenuPage: React.FC = () => {
       if (selectedCategory) params.categoryId = selectedCategory;
       if (vegOnly) params.vegetarian = true;
 
-      const res = await api.get<{ content: MenuItem[] }>('/menu', { params });
-      setMenuItems(res.data.content);
+      const res = await api.get<any>('/menu', { params });
+      if (res.data && Array.isArray(res.data.content)) {
+        setMenuItems(res.data.content);
+      } else if (Array.isArray(res.data)) {
+        setMenuItems(res.data);
+      } else {
+        // Fallback filter
+        let items = [...DEFAULT_MENU_ITEMS];
+        if (selectedCategory) items = items.filter(i => i.categoryId === selectedCategory);
+        if (vegOnly) items = items.filter(i => i.vegetarian);
+        if (query.trim()) {
+          const q = query.toLowerCase();
+          items = items.filter(i => i.name.toLowerCase().includes(q) || (i.description && i.description.toLowerCase().includes(q)));
+        }
+        setMenuItems(items);
+      }
     } catch (err) {
-      console.error('Failed to load menu:', err);
+      console.warn('Backend API unavailable, using offline fallback menu', err);
+      let items = [...DEFAULT_MENU_ITEMS];
+      if (selectedCategory) items = items.filter(i => i.categoryId === selectedCategory);
+      if (vegOnly) items = items.filter(i => i.vegetarian);
+      if (query.trim()) {
+        const q = query.toLowerCase();
+        items = items.filter(i => i.name.toLowerCase().includes(q) || (i.description && i.description.toLowerCase().includes(q)));
+      }
+      setMenuItems(items);
     } finally {
       setLoading(false);
     }

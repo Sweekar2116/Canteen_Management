@@ -27,10 +27,15 @@ export const AdminInventoryPage: React.FC = () => {
     try {
       setLoading(true);
       const url = filterLowStock ? '/admin/inventory/low-stock' : '/admin/inventory';
-      const res = await api.get<InventoryItem[]>(url);
-      setInventory(res.data);
+      const res = await api.get<any>(url);
+      if (Array.isArray(res.data)) {
+        setInventory(res.data);
+      } else {
+        setInventory([]);
+      }
     } catch (err) {
       console.error('Failed to load inventory:', err);
+      setInventory([]);
     } finally {
       setLoading(false);
     }

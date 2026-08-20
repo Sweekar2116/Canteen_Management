@@ -17,10 +17,12 @@ import api from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
+import { DEFAULT_CATEGORIES, DEFAULT_MENU_ITEMS } from '../services/mockData';
+
 export const LandingPage: React.FC = () => {
-  const [featuredItems, setFeaturedItems] = useState<MenuItem[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [featuredItems, setFeaturedItems] = useState<MenuItem[]>(DEFAULT_MENU_ITEMS.slice(0, 6));
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
+  const [loading, setLoading] = useState(false);
   const [addedItemMap, setAddedItemMap] = useState<Record<number, boolean>>({});
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
@@ -31,10 +33,16 @@ export const LandingPage: React.FC = () => {
       api.get<MenuItem[]>('/menu/all'),
     ])
       .then(([catRes, menuRes]) => {
-        setCategories(catRes.data.slice(0, 5));
-        setFeaturedItems(menuRes.data.slice(0, 6));
+        if (Array.isArray(catRes.data)) {
+          setCategories(catRes.data.slice(0, 5));
+        }
+        if (Array.isArray(menuRes.data)) {
+          setFeaturedItems(menuRes.data.slice(0, 6));
+        }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.warn('Backend API unavailable, using offline fallback data', err);
+      })
       .finally(() => setLoading(false));
   }, []);
 

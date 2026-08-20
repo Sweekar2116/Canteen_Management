@@ -39,13 +39,25 @@ export const AdminMenuPage: React.FC = () => {
     try {
       setLoading(true);
       const [menuRes, catRes] = await Promise.all([
-        api.get<{ content: MenuItem[] }>('/admin/menu', { params: { size: 50, query: searchQuery } }),
-        api.get<Category[]>('/categories'),
+        api.get<any>('/admin/menu', { params: { size: 50, query: searchQuery } }),
+        api.get<any>('/categories'),
       ]);
-      setItems(menuRes.data.content);
-      setCategories(catRes.data);
+      if (menuRes.data && Array.isArray(menuRes.data.content)) {
+        setItems(menuRes.data.content);
+      } else if (Array.isArray(menuRes.data)) {
+        setItems(menuRes.data);
+      } else {
+        setItems([]);
+      }
+      if (Array.isArray(catRes.data)) {
+        setCategories(catRes.data);
+      } else {
+        setCategories([]);
+      }
     } catch (err) {
       console.error('Failed to load menu items:', err);
+      setItems([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }

@@ -25,10 +25,15 @@ export const AdminCouponsPage: React.FC = () => {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const res = await api.get<Coupon[]>('/admin/coupons');
-      setCoupons(res.data);
+      const res = await api.get<any>('/admin/coupons');
+      if (Array.isArray(res.data)) {
+        setCoupons(res.data);
+      } else {
+        setCoupons([]);
+      }
     } catch (err) {
       console.error('Failed to load coupons:', err);
+      setCoupons([]);
     } finally {
       setLoading(false);
     }
