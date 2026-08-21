@@ -12,6 +12,15 @@ A modern, production-ready, full-stack campus food ordering and canteen manageme
 
 ---
 
+## 📸 Application Preview
+
+<div align="center">
+  <img src="./docs/screenshots/admin-dashboard.png" alt="CanteenHub Admin Console & Real-Time Analytics" width="95%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+  <p><em>Real-Time Admin Console, Operations KPI Cards, Recharts Analytics & Kitchen Order Tracking</em></p>
+</div>
+
+---
+
 ## 🌟 Key Features
 
 ### 👤 Customer Experience
