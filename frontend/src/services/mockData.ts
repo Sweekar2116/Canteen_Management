@@ -77,7 +77,7 @@ export const DEFAULT_MENU_ITEMS: MenuItem[] = [
     rating: 4.4,
     ratingCount: 75,
     preparationTime: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1567337710282-00832b415979?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 6,
