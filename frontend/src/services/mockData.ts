@@ -245,7 +245,7 @@ export const DEFAULT_MENU_ITEMS: MenuItem[] = [
     rating: 4.7,
     ratingCount: 160,
     preparationTime: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/images/mango-lassi.jpg',
   },
   {
     id: 18,
