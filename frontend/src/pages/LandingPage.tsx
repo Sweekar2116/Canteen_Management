@@ -126,9 +126,11 @@ export const LandingPage: React.FC = () => {
                 <div className="p-6 rounded-3xl bg-white shadow-2xl border border-slate-100 hover:scale-[1.02] transition duration-300">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-lg">
-                        🍲
-                      </div>
+                      <img
+                        src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=150&q=80"
+                        alt="Chef's Masala Dosa"
+                        className="h-12 w-12 rounded-2xl object-cover border border-amber-100 shadow-sm shrink-0"
+                      />
                       <div>
                         <h4 className="font-bold text-slate-900">Chef's Masala Dosa</h4>
                         <p className="text-xs text-slate-500">Crispy rice crepe with spiced potato</p>

@@ -1,4 +1,4 @@
-﻿-- ============================================================
+-- ============================================================
 -- Canteen Management System - Seed Data
 -- Run AFTER schema.sql
 -- ============================================================
@@ -33,27 +33,27 @@ INSERT IGNORE INTO categories (id, name, description, active) VALUES
 (5, 'Specials',   'Chef specials and seasonal favorites',                             TRUE);
 
 -- Menu Items (from original project + expanded)
-INSERT IGNORE INTO menu_items (id, name, description, price, category_id, available, vegetarian, rating, rating_count, preparation_time) VALUES
-(1,  'Masala Dosa',     'Crispy rice crepe filled with spiced potato masala, served with sambar and chutney',  80.00, 1, TRUE, TRUE,  4.5, 120, 10),
-(2,  'Idli Sambar',     'Soft steamed rice cakes served with piping hot sambar and fresh coconut chutney',    40.00, 1, TRUE, TRUE,  4.3, 95,  8),
-(3,  'Medu Vada',       'Crispy lentil doughnuts served with sambar and chutney',                             30.00, 1, TRUE, TRUE,  4.2, 80,  8),
-(4,  'Upma',            'Savory semolina porridge with vegetables and spices',                                 45.00, 1, TRUE, TRUE,  4.0, 60,  10),
-(5,  'Kesari Bath',     'Sweet saffron-flavored semolina pudding with ghee',                                  35.00, 1, TRUE, TRUE,  4.4, 75,  8),
-(6,  'Pulao',           'Fragrant basmati rice cooked with mixed vegetables and aromatic spices',             90.00, 2, TRUE, TRUE,  4.1, 55,  15),
-(7,  'Dal Tadka',       'Yellow lentils tempered with cumin, garlic and spices, served with rice',           75.00, 2, TRUE, TRUE,  4.3, 65,  15),
-(8,  'Paneer Butter Masala', 'Cottage cheese in rich tomato-butter gravy, best with naan',                  130.00, 2, TRUE, TRUE,  4.7, 110, 20),
-(9,  'Chicken Biryani', 'Aromatic basmati rice cooked with tender chicken and whole spices',                160.00, 2, TRUE, FALSE, 4.8, 200, 25),
-(10, 'Egg Fried Rice',  'Wok-tossed rice with scrambled eggs, vegetables and soy sauce',                    100.00, 2, TRUE, FALSE, 4.2, 90,  15),
-(11, 'Samosa',          'Crispy pastry filled with spiced potatoes and peas, served with mint chutney',      20.00, 3, TRUE, TRUE,  4.5, 180, 5),
-(12, 'Bread Pakoda',    'Bread slices dipped in spiced chickpea batter and deep fried',                      25.00, 3, TRUE, TRUE,  4.1, 70,  5),
-(13, 'Poha',            'Flattened rice cooked with onions, mustard seeds, and curry leaves',                30.00, 3, TRUE, TRUE,  4.0, 55,  8),
-(14, 'Masala Chai',     'Traditional Indian spiced tea with ginger, cardamom and milk',                      20.00, 4, TRUE, TRUE,  4.6, 250, 3),
-(15, 'Cold Coffee',     'Blended iced coffee with milk and sugar',                                           60.00, 4, TRUE, TRUE,  4.4, 130, 5),
-(16, 'Fresh Lime Soda', 'Freshly squeezed lime with soda water, sweet or salted',                            30.00, 4, TRUE, TRUE,  4.3, 95,  3),
-(17, 'Mango Lassi',     'Chilled yogurt drink blended with fresh mango pulp',                               55.00, 4, TRUE, TRUE,  4.7, 160, 5),
-(18, 'Thali Special',   'Complete meal with dal, sabzi, rice, roti, salad and dessert',                     150.00, 5, TRUE, TRUE,  4.9, 85,  20),
-(19, 'Chef Special Pasta','Penne pasta in homemade tomato basil sauce with herbs',                           120.00, 5, TRUE, TRUE,  4.2, 45,  20),
-(20, 'Chaat Platter',   'Assorted street food bites: pani puri, bhel puri and sev puri',                    70.00, 5, TRUE, TRUE,  4.6, 100, 10);
+INSERT IGNORE INTO menu_items (id, name, description, price, category_id, available, vegetarian, rating, rating_count, preparation_time, image_url) VALUES
+(1,  'Masala Dosa',     'Crispy rice crepe filled with spiced potato masala, served with sambar and chutney',  80.00, 1, TRUE, TRUE,  4.5, 120, 10, 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=80'),
+(2,  'Idli Sambar',     'Soft steamed rice cakes served with piping hot sambar and fresh coconut chutney',    40.00, 1, TRUE, TRUE,  4.3, 95,  8,  'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80'),
+(3,  'Medu Vada',       'Crispy lentil doughnuts served with sambar and chutney',                             30.00, 1, TRUE, TRUE,  4.2, 80,  8,  'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'),
+(4,  'Upma',            'Savory semolina porridge with vegetables and spices',                                 45.00, 1, TRUE, TRUE,  4.0, 60,  10, 'https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?auto=format&fit=crop&w=600&q=80'),
+(5,  'Kesari Bath',     'Sweet saffron-flavored semolina pudding with ghee',                                  35.00, 1, TRUE, TRUE,  4.4, 75,  8,  'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=600&q=80'),
+(6,  'Pulao',           'Fragrant basmati rice cooked with mixed vegetables and aromatic spices',             90.00, 2, TRUE, TRUE,  4.1, 55,  15, 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=600&q=80'),
+(7,  'Dal Tadka',       'Yellow lentils tempered with cumin, garlic and spices, served with rice',           75.00, 2, TRUE, TRUE,  4.3, 65,  15, 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'),
+(8,  'Paneer Butter Masala', 'Cottage cheese in rich tomato-butter gravy, best with naan',                  130.00, 2, TRUE, TRUE,  4.7, 110, 20, 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80'),
+(9,  'Chicken Biryani', 'Aromatic basmati rice cooked with tender chicken and whole spices',                160.00, 2, TRUE, FALSE, 4.8, 200, 25, 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80'),
+(10, 'Egg Fried Rice',  'Wok-tossed rice with scrambled eggs, vegetables and soy sauce',                    100.00, 2, TRUE, FALSE, 4.2, 90,  15, 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=80'),
+(11, 'Samosa',          'Crispy pastry filled with spiced potatoes and peas, served with mint chutney',      20.00, 3, TRUE, TRUE,  4.5, 180, 5,  'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80'),
+(12, 'Bread Pakoda',    'Bread slices dipped in spiced chickpea batter and deep fried',                      25.00, 3, TRUE, TRUE,  4.1, 70,  5,  'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=600&q=80'),
+(13, 'Poha',            'Flattened rice cooked with onions, mustard seeds, and curry leaves',                30.00, 3, TRUE, TRUE,  4.0, 55,  8,  'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=600&q=80'),
+(14, 'Masala Chai',     'Traditional Indian spiced tea with ginger, cardamom and milk',                      20.00, 4, TRUE, TRUE,  4.6, 250, 3,  'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80'),
+(15, 'Cold Coffee',     'Blended iced coffee with milk and sugar',                                           60.00, 4, TRUE, TRUE,  4.4, 130, 5,  'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80'),
+(16, 'Fresh Lime Soda', 'Freshly squeezed lime with soda water, sweet or salted',                            30.00, 4, TRUE, TRUE,  4.3, 95,  3,  'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80'),
+(17, 'Mango Lassi',     'Chilled yogurt drink blended with fresh mango pulp',                               55.00, 4, TRUE, TRUE,  4.7, 160, 5,  'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80'),
+(18, 'Thali Special',   'Complete meal with dal, sabzi, rice, roti, salad and dessert',                     150.00, 5, TRUE, TRUE,  4.9, 85,  20, 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80'),
+(19, 'Chef Special Pasta','Penne pasta in homemade tomato basil sauce with herbs',                           120.00, 5, TRUE, TRUE,  4.2, 45,  20, 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80'),
+(20, 'Chaat Platter',   'Assorted street food bites: pani puri, bhel puri and sev puri',                    70.00, 5, TRUE, TRUE,  4.6, 100, 10, 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=600&q=80');
 
 -- Inventory
 INSERT IGNORE INTO inventory (menu_item_id, quantity, unit, min_stock_level) VALUES
