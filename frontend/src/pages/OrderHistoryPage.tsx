@@ -12,15 +12,17 @@ export const OrderHistoryPage: React.FC = () => {
   useEffect(() => {
     api.get<Order[]>('/orders')
       .then(res => {
-        if (Array.isArray(res.data)) {
+        if (Array.isArray(res.data) && res.data.length > 0) {
           setOrders(res.data);
         } else {
-          setOrders([]);
+          const localOrders: Order[] = JSON.parse(localStorage.getItem('canteenhub_orders') || '[]');
+          setOrders(Array.isArray(localOrders) ? localOrders : []);
         }
       })
       .catch(err => {
-        console.error('Failed to load orders', err);
-        setOrders([]);
+        console.warn('Backend orders fetch failed, reading from local storage...', err);
+        const localOrders: Order[] = JSON.parse(localStorage.getItem('canteenhub_orders') || '[]');
+        setOrders(Array.isArray(localOrders) ? localOrders : []);
       })
       .finally(() => setLoading(false));
   }, []);

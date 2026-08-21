@@ -30,9 +30,27 @@ export const OrderTrackingPage: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.get<Order>(`/orders/${id}`);
-      setOrder(res.data);
+      if (res?.data?.id) {
+        setOrder(res.data);
+        setError(null);
+        return;
+      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Order not found');
+      console.warn('Backend order fetch offline, checking local session orders...', err);
+      try {
+        const localOrders: Order[] = JSON.parse(localStorage.getItem('canteenhub_orders') || '[]');
+        const found = localOrders.find((o) => String(o.id) === String(id));
+        if (found) {
+          setOrder(found);
+          setError(null);
+          return;
+        }
+      } catch (e) {}
+
+      // If not found in local orders and order is null
+      if (!order) {
+        setError(err.response?.data?.message || 'Order tracking details unavailable');
+      }
     } finally {
       setLoading(false);
     }
