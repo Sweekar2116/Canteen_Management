@@ -9,6 +9,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 A modern, production-ready, full-stack campus food ordering and canteen management system. Transformed from a legacy desktop/JDBC Java Swing application into an enterprise-grade web application featuring JWT authentication, role-based access control, real-time order lifecycle tracking, dynamic coupon engines, kitchen stock inventory, and analytics dashboards.
+<img width="1645" height="825" alt="Screenshot 2026-08-21 193341" src="https://github.com/user-attachments/assets/035f1d69-1adc-4d9c-acbe-892638e8fc16" />
 
 ---
 
