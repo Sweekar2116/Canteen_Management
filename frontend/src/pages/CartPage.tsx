@@ -70,7 +70,7 @@ export const CartPage: React.FC = () => {
     );
   }
 
-  if (!cart || cart.items.length === 0) {
+  if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-6">
         <div className="h-20 w-20 bg-brand-50 rounded-full flex items-center justify-center mx-auto text-brand-500 shadow-inner">
@@ -122,7 +122,7 @@ export const CartPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Cart Item List */}
         <div className="lg:col-span-8 space-y-4">
-          {cart.items.map((item) => {
+          {(Array.isArray(cart?.items) ? cart.items : []).map((item) => {
             const isUpdating = updatingId === item.id;
             return (
               <div

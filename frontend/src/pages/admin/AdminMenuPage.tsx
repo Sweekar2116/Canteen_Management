@@ -186,7 +186,7 @@ export const AdminMenuPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {items.map((item) => (
+                {(Array.isArray(items) ? items : []).map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/60 transition">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
@@ -311,7 +311,7 @@ export const AdminMenuPage: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20 bg-white"
               >
-                {categories.map((cat) => (
+                {(Array.isArray(categories) ? categories : []).map((cat) => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>

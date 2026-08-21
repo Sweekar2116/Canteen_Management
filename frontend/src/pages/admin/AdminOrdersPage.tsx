@@ -153,7 +153,7 @@ export const AdminOrdersPage: React.FC = () => {
           <div className="h-8 w-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-sm font-semibold text-slate-500">Loading orders...</p>
         </div>
-      ) : orders.length === 0 ? (
+      ) : !Array.isArray(orders) || orders.length === 0 ? (
         <div className="p-16 text-center bg-white rounded-3xl border border-slate-100 space-y-2">
           <ShoppingBag className="h-10 w-10 text-slate-300 mx-auto" />
           <h3 className="text-base font-bold text-slate-700">No orders found</h3>
@@ -174,9 +174,10 @@ export const AdminOrdersPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {orders.map((order) => {
+                {(Array.isArray(orders) ? orders : []).map((order) => {
                   const nextAction = getNextAction(order);
                   const isUpdating = updatingId === order.id;
+                  const orderItems = Array.isArray(order?.items) ? order.items : [];
 
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/60 transition">
@@ -194,9 +195,9 @@ export const AdminOrdersPage: React.FC = () => {
 
                       <td className="px-6 py-4">
                         <p className="font-medium text-slate-700 line-clamp-1 max-w-[200px]">
-                          {order.items.map((i) => `${i.quantity}x ${i.itemName}`).join(', ')}
+                          {orderItems.map((i) => `${i.quantity}x ${i.itemName}`).join(', ')}
                         </p>
-                        <span className="text-xs text-slate-400">{order.items.length} items</span>
+                        <span className="text-xs text-slate-400">{orderItems.length} items</span>
                       </td>
 
                       <td className="px-6 py-4">
@@ -260,7 +261,7 @@ export const AdminOrdersPage: React.FC = () => {
             <div className="space-y-2">
               <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ordered Items</h5>
               <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl p-4">
-                {selectedOrder.items.map((item) => (
+                {(Array.isArray(selectedOrder?.items) ? selectedOrder.items : []).map((item) => (
                   <div key={item.id} className="py-2 flex justify-between text-sm">
                     <span className="font-medium text-slate-800">{item.quantity}x {item.itemName}</span>
                     <span className="font-bold text-slate-900">₹{item.totalPrice}</span>

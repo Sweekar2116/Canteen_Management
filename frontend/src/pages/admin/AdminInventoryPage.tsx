@@ -133,7 +133,7 @@ export const AdminInventoryPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {inventory.map((inv) => (
+                {(Array.isArray(inventory) ? inventory : []).map((inv) => (
                   <tr key={inv.id} className="hover:bg-slate-50/60 transition">
                     <td className="px-6 py-4 font-extrabold text-slate-900">
                       {inv.itemName}

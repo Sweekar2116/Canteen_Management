@@ -235,7 +235,7 @@ export const OrderTrackingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6 relative z-10">
-              {steps.map((step, idx) => {
+              {(Array.isArray(steps) ? steps : []).map((step, idx) => {
                 const Icon = step.icon;
                 const isPassed = idx <= currentStepIndex;
                 const isCurrent = idx === currentStepIndex;
@@ -285,7 +285,7 @@ export const OrderTrackingPage: React.FC = () => {
         </h3>
 
         <div className="divide-y divide-slate-100">
-          {order.items.map((item) => (
+          {(Array.isArray(order.items) ? order.items : []).map((item) => (
             <div key={item.id} className="py-3.5 flex justify-between items-center text-sm">
               <div className="flex items-center space-x-3">
                 <img

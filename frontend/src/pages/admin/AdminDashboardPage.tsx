@@ -201,7 +201,7 @@ export const AdminDashboardPage: React.FC = () => {
                     paddingAngle={4}
                     dataKey="value"
                   >
-                    {statusPieData.map((entry, index) => (
+                    {(Array.isArray(statusPieData) ? statusPieData : []).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

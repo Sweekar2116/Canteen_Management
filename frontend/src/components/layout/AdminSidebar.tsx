@@ -52,7 +52,7 @@ export const AdminSidebar: React.FC = () => {
           <p className="text-xs text-slate-400 font-medium">Logged in as</p>
           <p className="text-sm font-bold text-white truncate">{user?.name}</p>
           <div className="flex gap-1 mt-1">
-            {user?.roles?.map(role => (
+            {(Array.isArray(user?.roles) ? user.roles : []).map(role => (
               <span key={role} className="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">
                 {role}
               </span>
@@ -62,7 +62,7 @@ export const AdminSidebar: React.FC = () => {
 
         {/* Navigation list */}
         <nav className="p-4 space-y-1.5">
-          {navItems.map((item) => {
+          {(Array.isArray(navItems) ? navItems : []).map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

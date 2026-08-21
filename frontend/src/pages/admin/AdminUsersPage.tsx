@@ -122,58 +122,61 @@ export const AdminUsersPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50/60 transition">
-                    <td className="px-6 py-4 font-extrabold text-slate-900">
-                      {u.name}
-                    </td>
+                {(Array.isArray(users) ? users : []).map((u) => {
+                  const userRole = (Array.isArray(u?.roles) && u.roles[0]) || 'CUSTOMER';
+                  return (
+                    <tr key={u.id} className="hover:bg-slate-50/60 transition">
+                      <td className="px-6 py-4 font-extrabold text-slate-900">
+                        {u.name}
+                      </td>
 
-                    <td className="px-6 py-4 text-slate-600 font-medium">
-                      {u.email}
-                    </td>
+                      <td className="px-6 py-4 text-slate-600 font-medium">
+                        {u.email}
+                      </td>
 
-                    <td className="px-6 py-4 text-slate-600">
-                      {u.phone || '-'}
-                    </td>
+                      <td className="px-6 py-4 text-slate-600">
+                        {u.phone || '-'}
+                      </td>
 
-                    <td className="px-6 py-4">
-                      <select
-                        value={u.roles[0] || 'CUSTOMER'}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className="px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-800 bg-white"
-                      >
-                        <option value="CUSTOMER">CUSTOMER</option>
-                        <option value="STAFF">STAFF</option>
-                        <option value="ADMIN">ADMIN</option>
-                      </select>
-                    </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={userRole}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-800 bg-white"
+                        >
+                          <option value="CUSTOMER">CUSTOMER</option>
+                          <option value="STAFF">STAFF</option>
+                          <option value="ADMIN">ADMIN</option>
+                        </select>
+                      </td>
 
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          u.enabled
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-rose-50 text-rose-700 border border-rose-200'
-                        }`}
-                      >
-                        {u.enabled ? 'Active' : 'Deactivated'}
-                      </span>
-                    </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            u.enabled
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          }`}
+                        >
+                          {u.enabled ? 'Active' : 'Deactivated'}
+                        </span>
+                      </td>
 
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleToggleStatus(u.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                          u.enabled
-                            ? 'border-rose-200 text-rose-600 hover:bg-rose-50'
-                            : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'
-                        }`}
-                      >
-                        {u.enabled ? 'Deactivate' : 'Activate'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleToggleStatus(u.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                            u.enabled
+                              ? 'border-rose-200 text-rose-600 hover:bg-rose-50'
+                              : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'
+                          }`}
+                        >
+                          {u.enabled ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

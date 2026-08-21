@@ -111,7 +111,7 @@ export const AdminCouponsPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {coupons.map((c) => (
+          {(Array.isArray(coupons) ? coupons : []).map((c) => (
             <div
               key={c.id}
               className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4"

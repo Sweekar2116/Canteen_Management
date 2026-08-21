@@ -176,7 +176,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-          {categories.map((category) => (
+          {(Array.isArray(categories) ? categories : []).map((category) => (
             <Link
               key={category.id}
               to={`/menu?category=${category.id}`}
@@ -216,7 +216,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredItems.map((item) => (
+          {(Array.isArray(featuredItems) ? featuredItems : []).map((item) => (
             <div
               key={item.id}
               className="rounded-2xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-lg transition group flex flex-col justify-between"

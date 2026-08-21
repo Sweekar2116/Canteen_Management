@@ -158,7 +158,7 @@ export const MenuPage: React.FC = () => {
           >
             All Items
           </button>
-          {categories.map((category) => (
+          {(Array.isArray(categories) ? categories : []).map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
@@ -197,7 +197,7 @@ export const MenuPage: React.FC = () => {
             <div key={i} className="h-64 rounded-2xl bg-slate-200 animate-pulse" />
           ))}
         </div>
-      ) : menuItems.length === 0 ? (
+      ) : !Array.isArray(menuItems) || menuItems.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-slate-100 p-8 space-y-4">
           <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
             <UtensilsCrossed className="h-8 w-8" />
@@ -219,7 +219,7 @@ export const MenuPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {menuItems.map((item) => (
+          {(Array.isArray(menuItems) ? menuItems : []).map((item) => (
             <div
               key={item.id}
               className="rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col justify-between group"

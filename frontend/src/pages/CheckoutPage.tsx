@@ -45,7 +45,7 @@ export const CheckoutPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
 
-  if (!cart || cart.items.length === 0) {
+  if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-black text-slate-900">Your cart is empty</h2>
@@ -334,7 +334,7 @@ export const CheckoutPage: React.FC = () => {
           </h3>
 
           <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
-            {cart.items.map((item) => (
+            {(Array.isArray(cart?.items) ? cart.items : []).map((item) => (
               <div key={item.id} className="flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center space-x-2.5">
                   <img
