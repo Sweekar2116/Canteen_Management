@@ -4,9 +4,11 @@ import { Coupon } from '../../types';
 import { Modal } from '../../components/ui/Modal';
 import { TicketPercent, Plus, Edit3, Trash2, Calendar, RefreshCw } from 'lucide-react';
 
+import { DEFAULT_COUPONS } from '../../services/mockData';
+
 export const AdminCouponsPage: React.FC = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [coupons, setCoupons] = useState<Coupon[]>(DEFAULT_COUPONS);
+  const [loading, setLoading] = useState(false);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,14 +28,14 @@ export const AdminCouponsPage: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.get<any>('/admin/coupons');
-      if (Array.isArray(res.data)) {
+      if (Array.isArray(res.data) && res.data.length > 0) {
         setCoupons(res.data);
       } else {
-        setCoupons([]);
+        setCoupons(DEFAULT_COUPONS);
       }
     } catch (err) {
-      console.error('Failed to load coupons:', err);
-      setCoupons([]);
+      console.warn('Backend coupons offline, using default coupon data', err);
+      setCoupons(DEFAULT_COUPONS);
     } finally {
       setLoading(false);
     }

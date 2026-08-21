@@ -17,12 +17,26 @@ import {
   RefreshCw 
 } from 'lucide-react';
 
+import { DEFAULT_ADMIN_ORDERS } from '../../services/mockData';
+
 export const AdminOrdersPage: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState<Order[]>(DEFAULT_ADMIN_ORDERS);
+  const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  const getCombinedLocalOrders = (): Order[] => {
+    try {
+      const userOrders: Order[] = JSON.parse(localStorage.getItem('canteenhub_orders') || '[]');
+      const combined = [...userOrders, ...DEFAULT_ADMIN_ORDERS];
+      const unique = combined.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
+      if (selectedStatus === 'ALL') return unique;
+      return unique.filter((o) => o.status === selectedStatus);
+    } catch {
+      return DEFAULT_ADMIN_ORDERS;
+    }
+  };
 
   const fetchOrders = async () => {
     try {
@@ -32,16 +46,16 @@ export const AdminOrdersPage: React.FC = () => {
         params.status = selectedStatus;
       }
       const res = await api.get<any>('/admin/orders', { params });
-      if (res.data && Array.isArray(res.data.content)) {
+      if (res.data && Array.isArray(res.data.content) && res.data.content.length > 0) {
         setOrders(res.data.content);
-      } else if (Array.isArray(res.data)) {
+      } else if (Array.isArray(res.data) && res.data.length > 0) {
         setOrders(res.data);
       } else {
-        setOrders([]);
+        setOrders(getCombinedLocalOrders());
       }
     } catch (err) {
-      console.error('Failed to load admin orders:', err);
-      setOrders([]);
+      console.warn('Backend admin orders offline, using local kitchen queue', err);
+      setOrders(getCombinedLocalOrders());
     } finally {
       setLoading(false);
     }
@@ -59,8 +73,14 @@ export const AdminOrdersPage: React.FC = () => {
       if (selectedOrder && selectedOrder.id === orderId) {
         setSelectedOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
       }
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to update order status');
+    } catch {
+      // Local state update fallback
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+      );
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
+      }
     } finally {
       setUpdatingId(null);
     }

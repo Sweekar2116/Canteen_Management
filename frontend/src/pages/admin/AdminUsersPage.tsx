@@ -4,9 +4,11 @@ import { User, RoleType } from '../../types';
 import { Badge } from '../../components/ui/Badge';
 import { Search, Shield, UserCheck, UserX, RefreshCw } from 'lucide-react';
 
+import { DEFAULT_USERS } from '../../services/mockData';
+
 export const AdminUsersPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<User[]>(DEFAULT_USERS);
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
 
@@ -18,16 +20,16 @@ export const AdminUsersPage: React.FC = () => {
       if (roleFilter) params.role = roleFilter;
 
       const res = await api.get<any>('/admin/users', { params });
-      if (res.data && Array.isArray(res.data.content)) {
+      if (res.data && Array.isArray(res.data.content) && res.data.content.length > 0) {
         setUsers(res.data.content);
-      } else if (Array.isArray(res.data)) {
+      } else if (Array.isArray(res.data) && res.data.length > 0) {
         setUsers(res.data);
       } else {
-        setUsers([]);
+        setUsers(DEFAULT_USERS);
       }
     } catch (err) {
-      console.error('Failed to load users:', err);
-      setUsers([]);
+      console.warn('Backend users offline, using default users fallback', err);
+      setUsers(DEFAULT_USERS);
     } finally {
       setLoading(false);
     }

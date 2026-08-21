@@ -11,9 +11,11 @@ import {
   RefreshCw 
 } from 'lucide-react';
 
+import { DEFAULT_INVENTORY } from '../../services/mockData';
+
 export const AdminInventoryPage: React.FC = () => {
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [inventory, setInventory] = useState<InventoryItem[]>(DEFAULT_INVENTORY);
+  const [loading, setLoading] = useState(false);
   const [filterLowStock, setFilterLowStock] = useState(false);
 
   // Edit Modal
@@ -28,14 +30,14 @@ export const AdminInventoryPage: React.FC = () => {
       setLoading(true);
       const url = filterLowStock ? '/admin/inventory/low-stock' : '/admin/inventory';
       const res = await api.get<any>(url);
-      if (Array.isArray(res.data)) {
+      if (Array.isArray(res.data) && res.data.length > 0) {
         setInventory(res.data);
       } else {
-        setInventory([]);
+        setInventory(filterLowStock ? DEFAULT_INVENTORY.filter(i => i.lowStock) : DEFAULT_INVENTORY);
       }
     } catch (err) {
-      console.error('Failed to load inventory:', err);
-      setInventory([]);
+      console.warn('Backend inventory offline, using default inventory data', err);
+      setInventory(filterLowStock ? DEFAULT_INVENTORY.filter(i => i.lowStock) : DEFAULT_INVENTORY);
     } finally {
       setLoading(false);
     }

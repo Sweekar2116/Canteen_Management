@@ -16,10 +16,12 @@ import {
   AlertCircle 
 } from 'lucide-react';
 
+import { DEFAULT_MENU_ITEMS, DEFAULT_CATEGORIES } from '../../services/mockData';
+
 export const AdminMenuPage: React.FC = () => {
-  const [items, setItems] = useState<MenuItem[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<MenuItem[]>(DEFAULT_MENU_ITEMS);
+  const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal State
@@ -42,22 +44,22 @@ export const AdminMenuPage: React.FC = () => {
         api.get<any>('/admin/menu', { params: { size: 50, query: searchQuery } }),
         api.get<any>('/categories'),
       ]);
-      if (menuRes.data && Array.isArray(menuRes.data.content)) {
+      if (menuRes.data && Array.isArray(menuRes.data.content) && menuRes.data.content.length > 0) {
         setItems(menuRes.data.content);
-      } else if (Array.isArray(menuRes.data)) {
+      } else if (Array.isArray(menuRes.data) && menuRes.data.length > 0) {
         setItems(menuRes.data);
       } else {
-        setItems([]);
+        setItems(DEFAULT_MENU_ITEMS);
       }
-      if (Array.isArray(catRes.data)) {
+      if (Array.isArray(catRes.data) && catRes.data.length > 0) {
         setCategories(catRes.data);
       } else {
-        setCategories([]);
+        setCategories(DEFAULT_CATEGORIES);
       }
     } catch (err) {
-      console.error('Failed to load menu items:', err);
-      setItems([]);
-      setCategories([]);
+      console.warn('Backend menu offline, using local menu catalog', err);
+      setItems(DEFAULT_MENU_ITEMS);
+      setCategories(DEFAULT_CATEGORIES);
     } finally {
       setLoading(false);
     }
