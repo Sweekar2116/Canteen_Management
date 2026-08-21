@@ -10,6 +10,7 @@
 
 A modern, production-ready, full-stack campus food ordering and canteen management system. Transformed from a legacy desktop/JDBC Java Swing application into an enterprise-grade web application featuring JWT authentication, role-based access control, real-time order lifecycle tracking, dynamic coupon engines, kitchen stock inventory, and analytics dashboards.
 <img width="1857" height="854" alt="Screenshot 2026-08-21 193321" src="https://github.com/user-attachments/assets/88b55ecb-b863-4142-a7a8-acdffdc86c88" />
+<img width="1660" height="750" alt="Screenshot 2026-08-21 193419" src="https://github.com/user-attachments/assets/53e81a5b-c879-45a0-b220-039427030d64" />
 
 <img width="1645" height="825" alt="Screenshot 2026-08-21 193341" src="https://github.com/user-attachments/assets/035f1d69-1adc-4d9c-acbe-892638e8fc16" />
 
